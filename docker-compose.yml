@@ -2,28 +2,29 @@
 
 services:
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: sqlserver
     ports:
-      - "1433:1433"
+      - '1433:1433'
     environment:
-      SA_PASSWORD: Passw0rd
-      ACCEPT_EULA: "Y"
+      SA_PASSWORD: 'MyPassword123!' # Stronger password
+      ACCEPT_EULA: 'Y'
     networks:
       - app-network
 
   contactsapi:
     build:
       context: .
-      dockerfile: Contacts.Api/Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "5000:80"
+      - '5000:8080'
     depends_on:
       - sqlserver
     networks:
       - app-network
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PhoneBookDb;User Id=sa;Password=MyPassword123!;TrustServerCertificate=true;Encrypt=false;
 
 networks:
   app-network:
