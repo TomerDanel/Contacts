@@ -1,0 +1,29 @@
+﻿version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: Passw0rd
+      ACCEPT_EULA: "Y"
+    networks:
+      - app-network
+
+  contactsapi:
+    build:
+      context: .
+      dockerfile: Contacts.Api/Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - sqlserver
+    networks:
+      - app-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+networks:
+  app-network:
