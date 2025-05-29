@@ -22,14 +22,13 @@ public class ContactRepository : IContactsRepository
         _contactTransformer = contactTransformer ?? throw new ArgumentNullException(nameof(contactTransformer));
     }
 
-    //Handle Pagination correctly
     public async Task<IReadOnlyCollection<ContactEntity>> GetContactsAsync(int page, int pageSize)
     {
         try
         {
             using IPhoneBookContext context = _phoneBookContextFactory.CreateContext();
 
-            IReadOnlyCollection<DbContact> contacts = await context.Contacts
+            var contacts = await context.Contacts
                 .OrderBy(c => c.FirstName)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
